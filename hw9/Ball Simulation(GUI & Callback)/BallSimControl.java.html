@@ -1,0 +1,121 @@
+<!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><b><font color="#000080">import</font></b> java<font color="#990000">.</font>awt<font color="#990000">.*;</font>
+<b><font color="#000080">import</font></b> java<font color="#990000">.</font>awt<font color="#990000">.</font>event<font color="#990000">.*;</font>
+<b><font color="#000080">import</font></b> javax<font color="#990000">.</font>swing<font color="#990000">.*;</font>
+<b><font color="#000080">import</font></b> java<font color="#990000">.</font>util<font color="#990000">.*;</font>
+
+<i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900"> * Viewer/controller for ball world simulation.</font></i>
+<i><font color="#9A1900"> * This panel contains the view plus buttons and mouse input controllers</font></i>
+<i><font color="#9A1900"> * that allow the user to pause and stop the simulation, and add new</font></i>
+<i><font color="#9A1900"> * objects to the simulation.</font></i>
+<i><font color="#9A1900"> *</font></i>
+<i><font color="#9A1900"> * CSE 331 12au-17sp</font></i>
+<i><font color="#9A1900"> */</font></i>
+<b><font color="#0000FF">public</font></b> <b><font color="#0000FF">class</font></b> <font color="#008080">BallSimControl</font> <b><font color="#0000FF">extends</font></b> JPanel <font color="#FF0000">{</font>
+  
+  <i><font color="#9A1900">// instance variables</font></i>
+  <b><font color="#0000FF">private</font></b> <font color="#008080">BallGraphicsView</font> viewPane<font color="#990000">;</font>      <i><font color="#9A1900">// the panel displaying the model</font></i>
+  <b><font color="#0000FF">private</font></b> <font color="#008080">SimModel</font> world<font color="#990000">;</font>                 <i><font color="#9A1900">// the simulation world model</font></i>
+  <b><font color="#0000FF">private</font></b> <b><font color="#0000FF">static</font></b> <font color="#008080">Random</font> random<font color="#990000">;</font>           <i><font color="#9A1900">// random number generator (used to</font></i>
+  <i><font color="#9A1900">// initialize new balls added to model)</font></i>
+  
+  <i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900">   * Construct a viewer/controller for the given world</font></i>
+<i><font color="#9A1900">   * </font></i><font color="#009900">@param</font><i><font color="#9A1900"> w the model object this object is controlling and viewing</font></i>
+<i><font color="#9A1900">   */</font></i>
+  <b><font color="#0000FF">public</font></b> <b><font color="#000000">BallSimControl</font></b><font color="#990000">(</font><font color="#008080">SimModel</font> w<font color="#990000">)</font> <font color="#FF0000">{</font>
+    
+    <i><font color="#9A1900">// save reference to model</font></i>
+    <b><font color="#0000FF">this</font></b><font color="#990000">.</font>world <font color="#990000">=</font> w<font color="#990000">;</font>
+    
+    <i><font color="#9A1900">// initialize random number sequence with system clock to get different</font></i>
+    <i><font color="#9A1900">// results each time.  (For debugging, would be better to use the same seed</font></i>
+    <i><font color="#9A1900">// value each time.)</font></i>
+    random <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> <b><font color="#000000">Random</font></b><font color="#990000">(</font>System<font color="#990000">.</font><b><font color="#000000">currentTimeMillis</font></b><font color="#990000">());</font>
+    
+    
+    <i><font color="#9A1900">// default layout manager for JPanel is flow layout - we want a border layout</font></i>
+    <b><font color="#000000">setLayout</font></b><font color="#990000">(</font><b><font color="#0000FF">new</font></b> <b><font color="#000000">BorderLayout</font></b><font color="#990000">());</font>
+    
+    <i><font color="#9A1900">// create paneel with ball display and place it in the center</font></i>
+    viewPane <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> <b><font color="#000000">BallGraphicsView</font></b><font color="#990000">(</font>world<font color="#990000">);</font>
+    viewPane<font color="#990000">.</font><b><font color="#000000">setPreferredSize</font></b><font color="#990000">(</font><b><font color="#0000FF">new</font></b> <b><font color="#000000">Dimension</font></b><font color="#990000">(</font>world<font color="#990000">.</font><b><font color="#000000">getWidth</font></b><font color="#990000">(),</font> world<font color="#990000">.</font><b><font color="#000000">getHeight</font></b><font color="#990000">()));</font>
+    <b><font color="#000000">add</font></b><font color="#990000">(</font>viewPane<font color="#990000">,</font> BorderLayout<font color="#990000">.</font>CENTER<font color="#990000">);</font>
+    
+    <i><font color="#9A1900">// register the view with the model</font></i>
+    world<font color="#990000">.</font><b><font color="#000000">addView</font></b><font color="#990000">(</font>viewPane<font color="#990000">);</font>
+    
+    <i><font color="#9A1900">// set up listener for mouse clicks on the view</font></i>
+    viewPane<font color="#990000">.</font><b><font color="#000000">addMouseListener</font></b><font color="#990000">(</font><b><font color="#0000FF">new</font></b> <b><font color="#000000">MouseAdapter</font></b><font color="#990000">()</font> <font color="#FF0000">{</font>
+      <b><font color="#0000FF">public</font></b> <font color="#009900">void</font> <b><font color="#000000">mouseClicked</font></b><font color="#990000">(</font><font color="#008080">MouseEvent</font> e<font color="#990000">)</font> <font color="#FF0000">{</font>
+        world<font color="#990000">.</font><b><font color="#000000">add</font></b><font color="#990000">(</font><b><font color="#000000">randomBall</font></b><font color="#990000">(</font>e<font color="#990000">.</font><b><font color="#000000">getX</font></b><font color="#990000">(),</font> e<font color="#990000">.</font><b><font color="#000000">getY</font></b><font color="#990000">()));</font>
+      <font color="#FF0000">}</font>
+    <font color="#FF0000">}</font><font color="#990000">);</font>
+    
+    
+    <i><font color="#9A1900">// create panel with buttons and add it at the bottom</font></i>
+    <font color="#008080">JButton</font> pause <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> <b><font color="#000000">JButton</font></b><font color="#990000">(</font><font color="#FF0000">"pause"</font><font color="#990000">);</font>
+    <font color="#008080">JButton</font> resume <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> <b><font color="#000000">JButton</font></b><font color="#990000">(</font><font color="#FF0000">"resume"</font><font color="#990000">);</font>
+    <font color="#008080">JButton</font> stop <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> <b><font color="#000000">JButton</font></b><font color="#990000">(</font><font color="#FF0000">"stop"</font><font color="#990000">);</font>
+    <font color="#008080">JPanel</font> buttons <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> <b><font color="#000000">JPanel</font></b><font color="#990000">();</font>
+    buttons<font color="#990000">.</font><b><font color="#000000">add</font></b><font color="#990000">(</font>pause<font color="#990000">);</font>
+    buttons<font color="#990000">.</font><b><font color="#000000">add</font></b><font color="#990000">(</font>resume<font color="#990000">);</font>
+    buttons<font color="#990000">.</font><b><font color="#000000">add</font></b><font color="#990000">(</font>stop<font color="#990000">);</font>
+    pause<font color="#990000">.</font><b><font color="#000000">setBackground</font></b><font color="#990000">(</font>Color<font color="#990000">.</font>yellow<font color="#990000">);</font>
+    resume<font color="#990000">.</font><b><font color="#000000">setBackground</font></b><font color="#990000">(</font>Color<font color="#990000">.</font>green<font color="#990000">);</font>
+    stop<font color="#990000">.</font><b><font color="#000000">setBackground</font></b><font color="#990000">(</font>Color<font color="#990000">.</font>red<font color="#990000">);</font>
+    buttons<font color="#990000">.</font><b><font color="#000000">setBackground</font></b><font color="#990000">(</font>Color<font color="#990000">.</font>lightGray<font color="#990000">);</font>
+    <b><font color="#000000">add</font></b><font color="#990000">(</font>buttons<font color="#990000">,</font> BorderLayout<font color="#990000">.</font>SOUTH<font color="#990000">);</font>
+    
+    <i><font color="#9A1900">// set up listener for the buttons</font></i>
+    <font color="#008080">SimButtonListener</font> buttonListener <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> <b><font color="#000000">SimButtonListener</font></b><font color="#990000">();</font>
+    pause<font color="#990000">.</font><b><font color="#000000">addActionListener</font></b><font color="#990000">(</font>buttonListener<font color="#990000">);</font>
+    resume<font color="#990000">.</font><b><font color="#000000">addActionListener</font></b><font color="#990000">(</font>buttonListener<font color="#990000">);</font>
+    stop<font color="#990000">.</font><b><font color="#000000">addActionListener</font></b><font color="#990000">(</font>buttonListener<font color="#990000">);</font>
+  <font color="#FF0000">}</font>
+  
+  <i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900">   * Create a new ball with random color, size, and velocity</font></i>
+<i><font color="#9A1900">   * </font></i><font color="#009900">@param</font><i><font color="#9A1900"> x initial x coordinate of the new ball</font></i>
+<i><font color="#9A1900">   * </font></i><font color="#009900">@param</font><i><font color="#9A1900"> y initial y coordinate of the new ball</font></i>
+<i><font color="#9A1900">   */</font></i>
+  <b><font color="#0000FF">private</font></b> <font color="#008080">Ball</font> <b><font color="#000000">randomBall</font></b><font color="#990000">(</font><font color="#009900">int</font> x<font color="#990000">,</font> <font color="#009900">int</font> y<font color="#990000">)</font> <font color="#FF0000">{</font>
+    <b><font color="#0000FF">return</font></b> <b><font color="#0000FF">new</font></b> <b><font color="#000000">Ball</font></b><font color="#990000">(</font>x<font color="#990000">,</font> y<font color="#990000">,</font>
+                    random<font color="#990000">.</font><b><font color="#000000">nextInt</font></b><font color="#990000">(</font><font color="#993399">21</font><font color="#990000">)</font> <font color="#990000">-</font> <font color="#993399">11</font><font color="#990000">,</font>       <i><font color="#9A1900">// dx</font></i>
+                    random<font color="#990000">.</font><b><font color="#000000">nextInt</font></b><font color="#990000">(</font><font color="#993399">21</font><font color="#990000">)</font> <font color="#990000">-</font> <font color="#993399">11</font><font color="#990000">,</font>       <i><font color="#9A1900">// dy</font></i>
+                    <b><font color="#0000FF">new</font></b> <b><font color="#000000">Color</font></b><font color="#990000">(</font>random<font color="#990000">.</font><b><font color="#000000">nextInt</font></b><font color="#990000">(</font><font color="#993399">256</font><font color="#990000">),</font> <i><font color="#9A1900">// color</font></i>
+                              random<font color="#990000">.</font><b><font color="#000000">nextInt</font></b><font color="#990000">(</font><font color="#993399">256</font><font color="#990000">),</font>
+                              random<font color="#990000">.</font><b><font color="#000000">nextInt</font></b><font color="#990000">(</font><font color="#993399">256</font><font color="#990000">)),</font>
+                    random<font color="#990000">.</font><b><font color="#000000">nextInt</font></b><font color="#990000">(</font><font color="#993399">20</font><font color="#990000">)</font> <font color="#990000">+</font> <font color="#993399">5</font><font color="#990000">,</font>        <i><font color="#9A1900">// diameter</font></i>
+                    world<font color="#990000">);</font>                        <i><font color="#9A1900">// model containing window size</font></i>
+  <font color="#FF0000">}</font>
+  
+<i><font color="#9A1900">/////////////// Inner Classes /////////////////</font></i>
+  
+  
+  <i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900">   * Handle button clicks for the BallSimControl window.</font></i>
+<i><font color="#9A1900">   */</font></i>
+  <b><font color="#0000FF">class</font></b> <font color="#008080">SimButtonListener</font> <b><font color="#0000FF">implements</font></b> ActionListener <font color="#FF0000">{</font>
+    
+    <i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900">     * Process button clicks by turning the simulation on and off</font></i>
+<i><font color="#9A1900">     * </font></i><font color="#009900">@param</font><i><font color="#9A1900"> e the event created by the button click</font></i>
+<i><font color="#9A1900">     */</font></i>
+    <b><font color="#0000FF">public</font></b> <font color="#009900">void</font> <b><font color="#000000">actionPerformed</font></b><font color="#990000">(</font><font color="#008080">ActionEvent</font> e<font color="#990000">)</font> <font color="#FF0000">{</font>
+      <b><font color="#0000FF">if</font></b> <font color="#990000">(</font>e<font color="#990000">.</font><b><font color="#000000">getActionCommand</font></b><font color="#990000">().</font><b><font color="#000000">equals</font></b><font color="#990000">(</font><font color="#FF0000">"pause"</font><font color="#990000">))</font> <font color="#FF0000">{</font>
+        world<font color="#990000">.</font><b><font color="#000000">pause</font></b><font color="#990000">();</font>
+      <font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b> <font color="#990000">(</font>e<font color="#990000">.</font><b><font color="#000000">getActionCommand</font></b><font color="#990000">().</font><b><font color="#000000">equals</font></b><font color="#990000">(</font><font color="#FF0000">"resume"</font><font color="#990000">))</font> <font color="#FF0000">{</font>
+        world<font color="#990000">.</font><b><font color="#000000">resume</font></b><font color="#990000">();</font>
+      <font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b> <font color="#990000">(</font>e<font color="#990000">.</font><b><font color="#000000">getActionCommand</font></b><font color="#990000">().</font><b><font color="#000000">equals</font></b><font color="#990000">(</font><font color="#FF0000">"stop"</font><font color="#990000">))</font> <font color="#FF0000">{</font>
+        world<font color="#990000">.</font><b><font color="#000000">stop</font></b><font color="#990000">();</font>
+      <font color="#FF0000">}</font>
+    <font color="#FF0000">}</font>
+  <font color="#FF0000">}</font>
+  
+<font color="#FF0000">}</font>
+</tt></pre>

@@ -1,0 +1,7 @@
+# Test unknown command and menu
+r r
+abc
+m
+
+# All of your test scripts should end with q to terminate the program.
+q

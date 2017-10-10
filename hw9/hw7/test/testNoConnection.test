@@ -1,0 +1,20 @@
+# Load the small test dataset, ListChildren
+# Add a new node
+# Find Path between the new added node and other nodes
+# Find Path for non existing node
+
+LoadGraph test smallLeastCostGraph.tsv
+
+AddNode test I
+
+FindPath test A I
+
+FindPath test A J
+
+FindPath test J K
+
+AddNode test J
+
+FindPath test A J
+
+FindPath test A A

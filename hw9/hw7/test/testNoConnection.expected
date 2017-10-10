@@ -1,0 +1,23 @@
+# Load the small test dataset, ListChildren
+# Add a new node
+# Find Path between the new added node and other nodes
+# Find Path for non existing node
+
+loaded graph test
+
+added node I to test
+
+path from A to I:
+no path found
+
+unknown character J
+
+unknown character J K
+
+added node J to test
+
+path from A to J:
+no path found
+
+path from A to A:
+total cost: 0.000

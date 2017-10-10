@@ -1,0 +1,11 @@
+# Find a path with only one "hop" (edge) using the full Marvel dataset.
+# This test exercises both the parser and BFS algorithm on a rather large
+# graph, so it is more of a system test than a true unit test. Such tests
+# should only be run after you have tested the parser and BFS algorithm
+# separately on much smaller graphs.
+
+loaded graph marvel
+
+# Test one hop:
+path from CAPTAIN AMERICA to HAWK:
+CAPTAIN AMERICA to HAWK via A '00

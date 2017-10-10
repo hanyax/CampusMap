@@ -1,0 +1,70 @@
+<!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><b><font color="#000080">import</font></b> java<font color="#990000">.</font>awt<font color="#990000">.*;</font>
+<b><font color="#000080">import</font></b> java<font color="#990000">.</font>util<font color="#990000">.*;</font>
+
+<i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900"> * A small ball object that wanders randomly around a bounded area.</font></i>
+<i><font color="#9A1900"> * CSE 331 12au-17sp</font></i>
+<i><font color="#9A1900"> */</font></i>
+<b><font color="#0000FF">public</font></b> <b><font color="#0000FF">class</font></b> <font color="#008080">Ball</font> <b><font color="#0000FF">implements</font></b> SimThing <font color="#FF0000">{</font>
+  <i><font color="#9A1900">// instance variables</font></i>
+  <b><font color="#0000FF">private</font></b> <font color="#009900">int</font> x<font color="#990000">,</font> y<font color="#990000">;</font>           <i><font color="#9A1900">// current coordinates of this Ball</font></i>
+  <b><font color="#0000FF">private</font></b> <font color="#009900">int</font> dx<font color="#990000">,</font> dy<font color="#990000">;</font>         <i><font color="#9A1900">// current motion direction in x and y</font></i>
+                              <i><font color="#9A1900">//    (sign gives direction, magnitude</font></i>
+                              <i><font color="#9A1900">//    gives speed)</font></i>
+  <b><font color="#0000FF">private</font></b> <font color="#008080">Color</font> color<font color="#990000">;</font>        <i><font color="#9A1900">// color of this ball</font></i>
+  <b><font color="#0000FF">private</font></b> <font color="#009900">int</font> diameter<font color="#990000">;</font>       <i><font color="#9A1900">// size of this ball</font></i>
+  <b><font color="#0000FF">private</font></b> <font color="#009900">int</font> maxx<font color="#990000">,</font> maxy<font color="#990000">;</font>     <i><font color="#9A1900">// max x and y coordiantes</font></i>
+  
+  
+  <i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900">   * Construct a new Ball with the given coordinates, initial direction, and model.</font></i>
+<i><font color="#9A1900">   * </font></i><font color="#009900">@param</font><i><font color="#9A1900"> x initial x coordinate of center of the ball</font></i>
+<i><font color="#9A1900">   * </font></i><font color="#009900">@param</font><i><font color="#9A1900"> y initial y coordinate of center of the ball</font></i>
+<i><font color="#9A1900">   * </font></i><font color="#009900">@param</font><i><font color="#9A1900"> dx initial change in x value on each simulation cycle</font></i>
+<i><font color="#9A1900">   * </font></i><font color="#009900">@param</font><i><font color="#9A1900"> dy initial change in y value on each simulation cycle</font></i>
+<i><font color="#9A1900">   * </font></i><font color="#009900">@param</font><i><font color="#9A1900"> c color of the ball</font></i>
+<i><font color="#9A1900">   * </font></i><font color="#009900">@param</font><i><font color="#9A1900"> diameter diameter of the ball</font></i>
+<i><font color="#9A1900">   * </font></i><font color="#009900">@param</font><i><font color="#9A1900"> model the model that this Ball is a part of</font></i>
+<i><font color="#9A1900">   */</font></i>
+  <b><font color="#0000FF">public</font></b> <b><font color="#000000">Ball</font></b><font color="#990000">(</font><font color="#009900">int</font> x<font color="#990000">,</font> <font color="#009900">int</font> y<font color="#990000">,</font> <font color="#009900">int</font> dx<font color="#990000">,</font> <font color="#009900">int</font> dy<font color="#990000">,</font> 
+              <font color="#008080">Color</font> c<font color="#990000">,</font> <font color="#009900">int</font> diameter<font color="#990000">,</font> <font color="#008080">SimModel</font> model<font color="#990000">)</font> <font color="#FF0000">{</font>
+    <b><font color="#0000FF">this</font></b><font color="#990000">.</font>x <font color="#990000">=</font> x<font color="#990000">;</font>
+    <b><font color="#0000FF">this</font></b><font color="#990000">.</font>y <font color="#990000">=</font> y<font color="#990000">;</font>
+    <b><font color="#0000FF">this</font></b><font color="#990000">.</font>dx <font color="#990000">=</font> dx<font color="#990000">;</font>
+    <b><font color="#0000FF">this</font></b><font color="#990000">.</font>dy <font color="#990000">=</font> dy<font color="#990000">;</font>
+    <b><font color="#0000FF">this</font></b><font color="#990000">.</font>color <font color="#990000">=</font> c<font color="#990000">;</font>
+    <b><font color="#0000FF">this</font></b><font color="#990000">.</font>diameter <font color="#990000">=</font> diameter<font color="#990000">;</font>
+    <b><font color="#0000FF">this</font></b><font color="#990000">.</font>maxx <font color="#990000">=</font> model<font color="#990000">.</font><b><font color="#000000">getWidth</font></b><font color="#990000">();</font>
+    <b><font color="#0000FF">this</font></b><font color="#990000">.</font>maxy <font color="#990000">=</font> model<font color="#990000">.</font><b><font color="#000000">getHeight</font></b><font color="#990000">();</font>
+  <font color="#FF0000">}</font>
+  
+  <i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900">   * Perform an appropriate action on each cycle of the simulation,</font></i>
+<i><font color="#9A1900">   * in this case advancing by dx,dy and reversing either direction</font></i>
+<i><font color="#9A1900">   * if we hit an edge of the simulation.</font></i>
+<i><font color="#9A1900">   */</font></i>
+  <b><font color="#0000FF">public</font></b> <font color="#009900">void</font> <b><font color="#000000">action</font></b><font color="#990000">()</font> <font color="#FF0000">{</font>
+    x <font color="#990000">=</font> x <font color="#990000">+</font> dx<font color="#990000">;</font>
+    <b><font color="#0000FF">if</font></b> <font color="#990000">(</font>x <font color="#990000">&lt;</font> diameter<font color="#990000">/</font><font color="#993399">2</font> <font color="#990000">||</font> x <font color="#990000">&gt;</font> maxx <font color="#990000">-</font> diameter<font color="#990000">/</font><font color="#993399">2</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+      dx <font color="#990000">=</font> <font color="#990000">-</font>dx<font color="#990000">;</font>
+    <font color="#FF0000">}</font>
+    y <font color="#990000">=</font> y <font color="#990000">+</font> dy<font color="#990000">;</font>
+    <b><font color="#0000FF">if</font></b> <font color="#990000">(</font>y <font color="#990000">&lt;</font> diameter<font color="#990000">/</font><font color="#993399">2</font> <font color="#990000">||</font> y <font color="#990000">&gt;</font> maxy <font color="#990000">-</font> diameter<font color="#990000">/</font><font color="#993399">2</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+      dy <font color="#990000">=</font> <font color="#990000">-</font>dy<font color="#990000">;</font>
+    <font color="#FF0000">}</font>
+  <font color="#FF0000">}</font>
+  
+  <i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900">   * Display this ball on the given graphics context</font></i>
+<i><font color="#9A1900">   * </font></i><font color="#009900">@param</font><i><font color="#9A1900"> g the graphics context where this ball should be drawn</font></i>
+<i><font color="#9A1900">   */</font></i>
+  <b><font color="#0000FF">public</font></b> <font color="#009900">void</font> <b><font color="#000000">paintThing</font></b><font color="#990000">(</font><font color="#008080">Graphics</font> g<font color="#990000">)</font> <font color="#FF0000">{</font>
+    g<font color="#990000">.</font><b><font color="#000000">setColor</font></b><font color="#990000">(</font>color<font color="#990000">);</font>
+    g<font color="#990000">.</font><b><font color="#000000">fillOval</font></b><font color="#990000">(</font>x<font color="#990000">-</font>diameter<font color="#990000">/</font><font color="#993399">2</font><font color="#990000">,</font> y<font color="#990000">-</font>diameter<font color="#990000">/</font><font color="#993399">2</font><font color="#990000">,</font> diameter<font color="#990000">,</font> diameter<font color="#990000">);</font>
+  <font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+</tt></pre>

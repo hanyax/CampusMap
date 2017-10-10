@@ -1,0 +1,21 @@
+# This test tests the Graph structor of a line where node were
+# all linked with unique edge and formed a line vector
+
+created graph test
+
+added edge e1 from n1 to n2 in test
+added edge e1 from n2 to n1 in test
+added edge e2 from n2 to n3 in test
+added edge e2 from n3 to n2 in test
+added edge e3 from n3 to n4 in test
+added edge e3 from n4 to n3 in test
+
+path from n1 to n4:
+n1 to n2 via e1
+n2 to n3 via e2
+n3 to n4 via e3
+
+path from n4 to n1:
+n4 to n3 via e3
+n3 to n2 via e2
+n2 to n1 via e1

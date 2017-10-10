@@ -1,0 +1,11 @@
+# Load the test small graph and find the paths for:
+
+loaded graph marvel
+
+path from IRON MAN/TONY STARK  to HAWK:
+IRON MAN/TONY STARK  to HAWK with weight 0.003
+total cost: 0.003
+
+unknown character Batman
+
+unknown character Superman Batman

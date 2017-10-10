@@ -1,0 +1,21 @@
+# Simple test of breadth-first search algorithm on a small Graph build with
+# tested Marvel Parser on *.tsv
+# Note that in this graph, there is an edge from GORILLA-MAN to HAWK but not
+# vice versa. In your full parser-generated Marvel graph, relationships are
+# bidirectional, meaning an edge from A to B will always be accompanied by an
+# edge from B to A.
+
+loaded graph heroes
+
+# Test longest path possible
+path from Iron Man to Thor:
+Iron Man to Black Widow via IM2
+Black Widow to Thor via A4
+
+# Test direct connection
+path from Hulk to Black Widow:
+Hulk to Black Widow via CA3
+
+# Test no path
+path from Iron Man to Bat Man:
+no path found

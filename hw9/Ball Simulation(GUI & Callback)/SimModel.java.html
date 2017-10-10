@@ -1,0 +1,194 @@
+<!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><b><font color="#000080">import</font></b> java<font color="#990000">.</font>util<font color="#990000">.*;</font>
+
+<i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900"> * A SimModel is a simple simulation framework for simulations of</font></i>
+<i><font color="#9A1900"> * collections of objects.  SimThings can be added to the model,</font></i>
+<i><font color="#9A1900"> * and SimViewers can ask to be notified regularly so they can</font></i>
+<i><font color="#9A1900"> * display the world.</font></i><b><font color="#0000FF">&lt;p&gt;</font></b>
+<i><font color="#9A1900"> *</font></i>
+<i><font color="#9A1900"> * The simulation repeats the following cycle as many times as requested:</font></i><b><font color="#0000FF">&lt;br&gt;</font></b>
+<i><font color="#9A1900"> *</font></i>
+<i><font color="#9A1900"> * Birth - anything added to the simulation on the previous cycle</font></i>
+<i><font color="#9A1900"> * is added to the world.</font></i><b><font color="#0000FF">&lt;br&gt;</font></b>
+<i><font color="#9A1900"> *</font></i>
+<i><font color="#9A1900"> * Action - all SimThings are asked to perform their action() method</font></i>
+<i><font color="#9A1900"> * in some unpredictable order.</font></i><b><font color="#0000FF">&lt;br&gt;</font></b>
+<i><font color="#9A1900"> *</font></i>
+<i><font color="#9A1900"> * View - all SimViewers are notified</font></i><b><font color="#0000FF">&lt;p&gt;</font></b>
+<i><font color="#9A1900"> * </font></i>
+<i><font color="#9A1900"> * The birth and action operations are separated so new things added to</font></i>
+<i><font color="#9A1900"> * the simulation in the middle of one cycle don't affect other</font></i>
+<i><font color="#9A1900"> * actions on the same cycle (i.e., all actions on one cycle should</font></i>
+<i><font color="#9A1900"> * be carried out with the existing population of things, without newly</font></i>
+<i><font color="#9A1900"> * created things interacting with old ones in unexpected ways).</font></i><b><font color="#0000FF">&lt;p&gt;</font></b>
+<i><font color="#9A1900"> * </font></i>
+<i><font color="#9A1900"> * This particular simulation is unrealistic in that the object coordinates</font></i>
+<i><font color="#9A1900"> * are the same as the display graphics coordinates.  In a more realistic</font></i>
+<i><font color="#9A1900"> * system, the object coordinates would be appropriate for the model and would</font></i>
+<i><font color="#9A1900"> * be scaled by the viewer to fit the view.</font></i><b><font color="#0000FF">&lt;p&gt;</font></b>
+<i><font color="#9A1900"> * </font></i>
+<i><font color="#9A1900"> * Adapted from an old simulation framework developed for CSE142/143.</font></i>
+<i><font color="#9A1900"> * </font></i>
+<i><font color="#9A1900"> * CSE 331 12au-17sp</font></i>
+<i><font color="#9A1900"> */</font></i>
+<b><font color="#0000FF">public</font></b> <b><font color="#0000FF">class</font></b> <font color="#008080">SimModel</font> <font color="#FF0000">{</font>
+  
+  <i><font color="#9A1900">// Implementation note: this simulation implements a hand-crafted</font></i>
+  <i><font color="#9A1900">// observer pattern by directly keeping lists of things and viewers.</font></i>
+  <i><font color="#9A1900">// The standard library observer/observable types could be used instead</font></i>
+  <i><font color="#9A1900">// (and probably should be in production code), but this is slightly</font></i>
+  <i><font color="#9A1900">// simpler and shows more of the details</font></i>
+  
+  <i><font color="#9A1900">// instance variables</font></i>
+  <b><font color="#0000FF">private</font></b> <font color="#008080">List&lt;SimThing&gt;</font> things<font color="#990000">;</font>       <i><font color="#9A1900">// List of all SimThings in this model</font></i>
+                                       <i><font color="#9A1900">//   at the beginning of the current cycle.</font></i>
+  <b><font color="#0000FF">private</font></b> <font color="#008080">List&lt;SimThing&gt;</font> newThings<font color="#990000">;</font>    <i><font color="#9A1900">// SimThings added to this model during</font></i>
+                                       <i><font color="#9A1900">//   the current cycle.</font></i>
+  <b><font color="#0000FF">private</font></b> <font color="#008080">List&lt;SimView&gt;</font> viewers<font color="#990000">;</font>       <i><font color="#9A1900">// SimViews registered to view this</font></i>
+                                       <i><font color="#9A1900">//   SimModel.</font></i>
+  <b><font color="#0000FF">private</font></b> <font color="#009900">int</font> cyclesToGo<font color="#990000">;</font>              <i><font color="#9A1900">// Number of cycles remaining in the </font></i>
+                                       <i><font color="#9A1900">//   current simulation</font></i>
+  <b><font color="#0000FF">private</font></b> <font color="#009900">int</font> width<font color="#990000">,</font> height<font color="#990000">;</font>           <i><font color="#9A1900">// Width and height of the simulated world</font></i>
+  <b><font color="#0000FF">private</font></b> <font color="#009900">boolean</font> paused<font color="#990000">;</font>              <i><font color="#9A1900">// True if the simulation is paused</font></i>
+  <b><font color="#0000FF">private</font></b> <b><font color="#0000FF">final</font></b> <font color="#009900">int</font> sleepTime <font color="#990000">=</font> <font color="#993399">50</font><font color="#990000">;</font>    <i><font color="#9A1900">// # msec. to sleep between cycles</font></i>
+  
+  <i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900">   * Constructor for objects of class SimModel</font></i>
+<i><font color="#9A1900">   * </font></i><font color="#009900">@param</font><i><font color="#9A1900"> width Width of the simulated world</font></i>
+<i><font color="#9A1900">   * </font></i><font color="#009900">@param</font><i><font color="#9A1900"> height Height of the simulated world</font></i>
+<i><font color="#9A1900">   */</font></i>
+  <b><font color="#0000FF">public</font></b> <b><font color="#000000">SimModel</font></b><font color="#990000">(</font><font color="#009900">int</font> width<font color="#990000">,</font> <font color="#009900">int</font> height<font color="#990000">)</font> <font color="#FF0000">{</font>
+    <i><font color="#9A1900">// capture model size</font></i>
+    <b><font color="#0000FF">this</font></b><font color="#990000">.</font>width <font color="#990000">=</font> width<font color="#990000">;</font>
+    <b><font color="#0000FF">this</font></b><font color="#990000">.</font>height <font color="#990000">=</font> height<font color="#990000">;</font>
+
+    <i><font color="#9A1900">// Start with no SimThings and no new ones to add</font></i>
+    things     <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> ArrayList<font color="#990000">&lt;</font>SimThing<font color="#990000">&gt;();</font>
+    newThings  <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> ArrayList<font color="#990000">&lt;</font>SimThing<font color="#990000">&gt;();</font>
+    viewers    <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> ArrayList<font color="#990000">&lt;</font>SimView<font color="#990000">&gt;();</font>
+    cyclesToGo <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+    
+    <i><font color="#9A1900">// simulation is running initially</font></i>
+    paused <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+  <font color="#FF0000">}</font>
+  
+  <i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900">   * Add the given SimThing to the world after this cycle is complete.</font></i>
+<i><font color="#9A1900">   * </font></i><font color="#009900">@param</font><i><font color="#9A1900"> t the SimThing to be added</font></i>
+<i><font color="#9A1900">   */</font></i>
+  <b><font color="#0000FF">public</font></b> <font color="#009900">void</font> <b><font color="#000000">add</font></b><font color="#990000">(</font><font color="#008080">SimThing</font> t<font color="#990000">)</font> <font color="#FF0000">{</font>
+    newThings<font color="#990000">.</font><b><font color="#000000">add</font></b><font color="#990000">(</font>t<font color="#990000">);</font>
+  <font color="#FF0000">}</font>
+  
+  <i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900">   * Add the given SimView to the list of viewers to be</font></i>
+<i><font color="#9A1900">   * notified each cycle.</font></i>
+<i><font color="#9A1900">   * </font></i><font color="#009900">@param</font><i><font color="#9A1900"> v the new viewer</font></i>
+<i><font color="#9A1900">   */</font></i>
+  <b><font color="#0000FF">public</font></b> <font color="#009900">void</font> <b><font color="#000000">addView</font></b><font color="#990000">(</font><font color="#008080">SimView</font> v<font color="#990000">)</font> <font color="#FF0000">{</font>
+    viewers<font color="#990000">.</font><b><font color="#000000">add</font></b><font color="#990000">(</font>v<font color="#990000">);</font>
+  <font color="#FF0000">}</font>
+  
+  <i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900">   * Return a copy of the list of Things in the simulation</font></i>
+<i><font color="#9A1900">   * at the beginning of the current cycle.</font></i>
+<i><font color="#9A1900">   * </font></i><font color="#009900">@return</font><i><font color="#9A1900"> a new list with a copy of all things currently in the simulation</font></i>
+<i><font color="#9A1900">   */</font></i>
+  <b><font color="#0000FF">public</font></b> <font color="#008080">List&lt;SimThing&gt;</font> <b><font color="#000000">getThings</font></b><font color="#990000">()</font> <font color="#FF0000">{</font>
+    <b><font color="#0000FF">return</font></b> <b><font color="#0000FF">new</font></b> ArrayList<font color="#990000">&lt;</font>SimThing<font color="#990000">&gt;(</font>things<font color="#990000">);</font>
+  <font color="#FF0000">}</font>
+  
+  <i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900">   * Return the horizontal size of the simulated world</font></i>
+<i><font color="#9A1900">   * </font></i><font color="#009900">@return</font><i><font color="#9A1900">  width of the simulation</font></i>
+<i><font color="#9A1900">   */</font></i>
+  <b><font color="#0000FF">public</font></b> <font color="#009900">int</font> <b><font color="#000000">getWidth</font></b><font color="#990000">()</font> <font color="#FF0000">{</font>
+    <b><font color="#0000FF">return</font></b> width<font color="#990000">;</font>
+  <font color="#FF0000">}</font>
+  
+  <i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900">   * Return the vertical size of the simulated world</font></i>
+<i><font color="#9A1900">   * </font></i><font color="#009900">@return</font><i><font color="#9A1900"> height of the simulation</font></i>
+<i><font color="#9A1900">   */</font></i>
+  <b><font color="#0000FF">public</font></b> <font color="#009900">int</font> <b><font color="#000000">getHeight</font></b><font color="#990000">()</font> <font color="#FF0000">{</font>
+    <b><font color="#0000FF">return</font></b> height<font color="#990000">;</font>
+  <font color="#FF0000">}</font>
+  
+  <i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900">   * Run the simulation for the requested number of cycles</font></i>
+<i><font color="#9A1900">   * </font></i><font color="#009900">@param</font><i><font color="#9A1900"> nCycles number of cycles to run</font></i>
+<i><font color="#9A1900">   */</font></i>
+  <b><font color="#0000FF">public</font></b> <font color="#009900">void</font> <b><font color="#000000">go</font></b><font color="#990000">(</font><font color="#009900">int</font> nCycles<font color="#990000">)</font> <font color="#FF0000">{</font>
+    cyclesToGo <font color="#990000">=</font> nCycles<font color="#990000">;</font>
+    <b><font color="#000000">runSim</font></b><font color="#990000">();</font>
+  <font color="#FF0000">}</font>
+  
+  <i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900">   * Run the simulation indefinitely</font></i>
+<i><font color="#9A1900">   */</font></i>
+  <b><font color="#0000FF">public</font></b> <font color="#009900">void</font> <b><font color="#000000">go</font></b><font color="#990000">()</font> <font color="#FF0000">{</font>
+    <b><font color="#000000">go</font></b><font color="#990000">(</font>Integer<font color="#990000">.</font>MAX_VALUE<font color="#990000">);</font>
+  <font color="#FF0000">}</font>
+  
+  <i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900">   * Pause the simulation</font></i>
+<i><font color="#9A1900">   */</font></i>
+  <b><font color="#0000FF">public</font></b> <font color="#009900">void</font> <b><font color="#000000">pause</font></b><font color="#990000">()</font> <font color="#FF0000">{</font>
+    paused <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+  <font color="#FF0000">}</font>
+  
+  <i><font color="#9A1900">/** </font></i>
+<i><font color="#9A1900">   * Resume the simulation</font></i>
+<i><font color="#9A1900">   */</font></i>
+  <b><font color="#0000FF">public</font></b> <font color="#009900">void</font> <b><font color="#000000">resume</font></b><font color="#990000">()</font> <font color="#FF0000">{</font>
+    paused <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+  <font color="#FF0000">}</font>
+  
+  <i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900">   * Stop the simulation</font></i>
+<i><font color="#9A1900">   */</font></i>
+  <b><font color="#0000FF">public</font></b> <font color="#009900">void</font> <b><font color="#000000">stop</font></b><font color="#990000">()</font> <font color="#FF0000">{</font>
+    cyclesToGo <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+  <font color="#FF0000">}</font>
+  
+  <i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900">   * Run the simulation until number of requested cycles</font></i>
+<i><font color="#9A1900">   * performed, or until stopped.</font></i>
+<i><font color="#9A1900">   */</font></i>
+  <b><font color="#0000FF">private</font></b> <font color="#009900">void</font> <b><font color="#000000">runSim</font></b><font color="#990000">()</font> <font color="#FF0000">{</font>
+    <b><font color="#0000FF">while</font></b> <font color="#990000">(</font>cyclesToGo <font color="#990000">&gt;</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+      <b><font color="#0000FF">if</font></b> <font color="#990000">(!</font> paused<font color="#990000">)</font> <font color="#FF0000">{</font>
+        <b><font color="#000000">cycle</font></b><font color="#990000">();</font>
+        cyclesToGo<font color="#990000">--;</font>
+      <font color="#FF0000">}</font>
+      <b><font color="#0000FF">try</font></b> <font color="#FF0000">{</font> Thread<font color="#990000">.</font><b><font color="#000000">sleep</font></b><font color="#990000">(</font>sleepTime<font color="#990000">);</font> <font color="#FF0000">}</font>
+      <b><font color="#0000FF">catch</font></b> <font color="#990000">(</font><font color="#008080">Exception</font> e<font color="#990000">)</font> <font color="#FF0000">{</font> <i><font color="#9A1900">/* ignore */</font></i> <font color="#FF0000">}</font>
+    <font color="#FF0000">}</font>
+  <font color="#FF0000">}</font>
+  
+  <i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900">   * Run one simulation cycle</font></i>
+<i><font color="#9A1900">   */</font></i>
+  <b><font color="#0000FF">private</font></b> <font color="#009900">void</font> <b><font color="#000000">cycle</font></b><font color="#990000">()</font> <font color="#FF0000">{</font>
+    <i><font color="#9A1900">// Add newborn things to the world, and set</font></i>
+    <i><font color="#9A1900">// list of newborns to empty to start this cycle</font></i>
+    things<font color="#990000">.</font><b><font color="#000000">addAll</font></b><font color="#990000">(</font>newThings<font color="#990000">);</font>
+    newThings<font color="#990000">.</font><b><font color="#000000">clear</font></b><font color="#990000">();</font>
+    
+    <i><font color="#9A1900">// Have all things in the sumulation perform their actions</font></i>
+    <b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">SimThing</font> t<font color="#990000">:</font> things<font color="#990000">)</font> <font color="#FF0000">{</font>
+      t<font color="#990000">.</font><b><font color="#000000">action</font></b><font color="#990000">();</font>
+    <font color="#FF0000">}</font>
+    
+    <i><font color="#9A1900">// Notify all viewers so they can update as needed</font></i>
+    <b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">SimView</font> v<font color="#990000">:</font> viewers<font color="#990000">)</font> <font color="#FF0000">{</font>
+      v<font color="#990000">.</font><b><font color="#000000">notifyViewer</font></b><font color="#990000">();</font>
+    <font color="#FF0000">}</font>
+  <font color="#FF0000">}</font>
+  
+<font color="#FF0000">}</font>
+</tt></pre>
