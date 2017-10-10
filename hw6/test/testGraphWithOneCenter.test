@@ -1,0 +1,19 @@
+# This test the graph structure where four nodes is connected
+# only through the fifth node in the center.
+
+CreateGraph test
+
+AddEdge test n1 n5 e1
+AddEdge test n5 n1 e1
+AddEdge test n2 n5 e2
+AddEdge test n5 n2 e2
+AddEdge test n3 n5 e3
+AddEdge test n5 n3 e3
+AddEdge test n4 n5 e4
+AddEdge test n5 n4 e4
+
+FindPath test n1 n2
+
+FindPath test n1 n3
+
+FindPath test n1 n4

@@ -1,0 +1,15 @@
+# This test tests the Graph structor of a line where node were
+# all linked with unique edge and formed a line vector
+
+CreateGraph test
+
+AddEdge test n1 n2 e1
+AddEdge test n2 n1 e1
+AddEdge test n2 n3 e2
+AddEdge test n3 n2 e2
+AddEdge test n3 n4 e3
+AddEdge test n4 n3 e3
+
+FindPath test n1 n4
+
+FindPath test n4 n1

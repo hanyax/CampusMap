@@ -1,0 +1,11 @@
+# Load the small test dataset test List Children
+
+loaded graph test
+
+# Test Node that exist in Graph
+the children of A in test are: A(0.000) B(0.500) C(1.000) D(0.250)
+the children of B in test are: A(0.500) B(0.000) C(0.200) E(0.125) F(0.500)
+the children of C in test are: A(1.000) B(0.200) C(0.000) D(0.500) E(0.167)
+
+# Test Node that does not exist in Graph
+the children of Z in test are:

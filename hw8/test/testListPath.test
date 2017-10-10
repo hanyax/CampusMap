@@ -1,0 +1,5 @@
+#  Verify that the program list and correctly outputs all buildings in the map
+b
+
+# All of your test scripts should end with q to terminate the program.
+q

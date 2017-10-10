@@ -1,0 +1,8 @@
+# Verify that the program finds and correctly outputs the shortest path from
+# MUS to MGH.
+r
+MUS
+MGH
+
+# All of your test scripts should end with q to terminate the program.
+q

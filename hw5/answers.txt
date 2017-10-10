@@ -1,0 +1,83 @@
+CSE 331 Homework 5.  Answers to Written questions.
+Edit this file to supply your answers.
+
+Name: Shawn Xu 
+
+Problem 1. (Written exercises)
+
+(a) IntQueue1: 	// Abstraction Functions:
+						The nth entriy.get(entries.size-1) is at the end of the queue which 
+						is added most recently and can only be removed at last
+						...
+						The 1st element entries.get(0) is at the font of the queue which
+						is added least recently and is the first to be removed 
+				// Representation invariant:
+						entries != null &&
+						entries never contains null value 
+				
+	IntQueue2:  // Abstraction Functions:
+						The Nth element entries[(front+size-1)%entries.length] is at the end of the queue which 
+						is added most recently and can only be removed at last
+						...
+						The 1st element element[front] is at the font of the queue which
+						is added least recently and is the first to be removed 
+				// Representation invariant:
+						entries != null &&
+						0 <= size <= entry.length &&
+						0 <= front <= entry.length &&
+						entries never contains null value 
+
+(b) (a, d, g)
+	(b, c)
+	(e)
+	(f, h)
+
+(c) 1)	No. The input and return type of this method are both int which is immutable which means 
+		client will not be able to change it.
+	2)	Yes. This method could expose representation if it modifies inner representation and return string[] without copying 
+	3)	No. Since it is a private method, client can not see/use it directly, thus there is no chance of exposing. 
+	4)	No. The return type of this method is String which is immutable which means 
+		client will not be able to change it.Client will not be able to change it.
+	5)	No. This iterator's next method will has a return type Integer which is immutable.
+	6)	Yes. Deck will refer to the same object as card when this constructor is called which makes card's information 
+		accessible through Deck.
+
+Problem 2.  (Graph interface/operations)
+	To construct a Graph which is formed by nodes and edges, It is necessary to have a method to build 
+	node and a method to build edge
+		addNode: Add node to the Graph
+		addEdge: Add Edge connection to existing node
+		
+	To implement path search algorithm from HW6, It is necessary to have methods that get the edges of interests
+	and check the relationship between nodes.
+		isChildren: check if two nodes are directly linked
+		getAllEdges: get access of all edges point from one node
+		getChildren: get access of all children nodes with specific label of one node
+		getAllParents: get access of all nodes in the graph
+		
+	I implemented two extra classes: GraphNode and DirectedLeveled Edge. The consideration is modularity. I want to keep 
+	each critical part of Graph representation individual so that if I need to modify any of the part, other parts can 
+	operate with minimum changes.  
+		
+Problem 3.  (Testing strategy)
+	My test strategy is:
+		- Each method:Test the most regular case, then test marginal cases
+					  Test cases that should pass, then test cases that should throw exceptions 
+		- Each Class: Test method that rely less on other methods, then test other methods with tested independent method					  
+
+Problem 4.  (Representation)
+	As a collection of edges: Work well with edges: able to move and add edges very efficiently
+	
+	As an adjacency list: More organized and easy to work with because it sorts edges by its parent node
+	
+	As an adjacency matrix, which explicitly represents, for every pair ⟨A,B⟩ of nodes, 
+	what edges there are (if any) from A to B: Very efficient when finding path between two nodes
+	
+	I choose the second representation since it is easier to implement than matrix and more organized and 
+	more efficient to work with than the collection of edges. 
+
+	
+	
+	
+	
+	

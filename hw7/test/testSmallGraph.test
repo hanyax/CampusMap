@@ -1,0 +1,12 @@
+# Load the test small graph and find the paths for:
+
+LoadGraph test smallLeastCostGraph.tsv
+
+# Most Apart:
+FindPath test D H
+
+# Adjacent:
+FindPath test A B
+
+# Middle Distance:
+FindPath test A E

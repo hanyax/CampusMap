@@ -1,0 +1,22 @@
+Testsuite: hw5.test.ImplementationTests
+Tests run: 19, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.034 sec
+
+Testcase: testAssertEnabled took 0 sec
+Testcase: testEqualsReflexiveDifferentObjects took 0.001 sec
+Testcase: testEqualsReflexive took 0 sec
+Testcase: testGetNode took 0 sec
+Testcase: testConstructorExcepetion took 0 sec
+Testcase: testConstructor took 0 sec
+Testcase: testConstructorAndGetLabel took 0 sec
+Testcase: testGetParentAndGetChildren took 0 sec
+Testcase: testConstructorException took 0 sec
+Testcase: testGetAllParents took 0.001 sec
+Testcase: testAddEdge took 0 sec
+Testcase: testAddNode took 0 sec
+Testcase: testGetChildren took 0 sec
+Testcase: testGetAllEdge took 0 sec
+Testcase: testAddNodeException took 0 sec
+Testcase: testAddEdgeException took 0 sec
+Testcase: testIsChildren took 0 sec
+Testcase: testGetChildrenException took 0.001 sec
+Testcase: testGetAllEdgeException took 0 sec

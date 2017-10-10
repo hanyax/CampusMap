@@ -1,0 +1,55 @@
+<!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><b><font color="#000080">import</font></b> java<font color="#990000">.</font>awt<font color="#990000">.*;</font>
+<b><font color="#000080">import</font></b> javax<font color="#990000">.</font>swing<font color="#990000">.*;</font>
+<b><font color="#000080">import</font></b> java<font color="#990000">.</font>util<font color="#990000">.*;</font>
+
+<i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900"> * Graphical viewer for Ball simulation.  Should be added to a top-level</font></i>
+<i><font color="#9A1900"> * container for viewing, and should be added as a SimView in the model</font></i>
+<i><font color="#9A1900"> * we wish to view.</font></i>
+<i><font color="#9A1900"> * </font></i>
+<i><font color="#9A1900"> * CSE 331 12au-17sp</font></i>
+<i><font color="#9A1900"> */</font></i>
+
+<b><font color="#0000FF">public</font></b> <b><font color="#0000FF">class</font></b> <font color="#008080">BallGraphicsView</font> <b><font color="#0000FF">extends</font></b> JPanel <font color="#008080">implements</font> SimView <font color="#FF0000">{</font>
+  <i><font color="#9A1900">// instance variables</font></i>
+  <b><font color="#0000FF">private</font></b> <font color="#008080">SimModel</font> model<font color="#990000">;</font>  <i><font color="#9A1900">// the SimModel we are viewing</font></i>
+  
+  <i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900">   * Initialize this as a viewer linked to the given model.</font></i>
+<i><font color="#9A1900">   * </font></i><font color="#009900">@param</font><i><font color="#9A1900"> model  The model we are watching</font></i>
+<i><font color="#9A1900">   */</font></i>
+  <b><font color="#0000FF">public</font></b> <b><font color="#000000">BallGraphicsView</font></b><font color="#990000">(</font><font color="#008080">SimModel</font> model<font color="#990000">)</font> <font color="#FF0000">{</font>
+    <b><font color="#0000FF">this</font></b><font color="#990000">.</font>model <font color="#990000">=</font> model<font color="#990000">;</font>
+  <font color="#FF0000">}</font>
+  
+  <i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900">   * React when notified of a change by a model by repainting this view</font></i>
+<i><font color="#9A1900">   */</font></i>
+  <b><font color="#0000FF">public</font></b> <font color="#009900">void</font> <b><font color="#000000">notifyViewer</font></b><font color="#990000">()</font> <font color="#FF0000">{</font>
+    <b><font color="#000000">repaint</font></b><font color="#990000">();</font>
+  <font color="#FF0000">}</font>
+  
+  <i><font color="#9A1900">/**</font></i>
+<i><font color="#9A1900">   * Repaint the simulation by requesting each item to repaint itself</font></i>
+<i><font color="#9A1900">   * </font></i><font color="#009900">@param</font><i><font color="#9A1900"> g the graphics context where the painting should take place</font></i>
+<i><font color="#9A1900">   */</font></i>
+  @Override
+  <b><font color="#0000FF">public</font></b> <font color="#009900">void</font> <b><font color="#000000">paintComponent</font></b><font color="#990000">(</font><font color="#008080">Graphics</font> g<font color="#990000">)</font> <font color="#FF0000">{</font>
+    <b><font color="#0000FF">super</font></b><font color="#990000">.</font><b><font color="#000000">paintComponent</font></b><font color="#990000">(</font>g<font color="#990000">);</font>
+    
+    <i><font color="#9A1900">// clear frame to background color (white, in this case)</font></i>
+    <font color="#008080">Rectangle</font> bounds <font color="#990000">=</font> <b><font color="#000000">getBounds</font></b><font color="#990000">();</font>
+    g<font color="#990000">.</font><b><font color="#000000">clearRect</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> bounds<font color="#990000">.</font>width<font color="#990000">,</font> bounds<font color="#990000">.</font>height<font color="#990000">);</font>
+    
+    java<font color="#990000">.</font>util<font color="#990000">.</font><font color="#008080">List&lt;SimThing&gt;</font> things <font color="#990000">=</font> model<font color="#990000">.</font><b><font color="#000000">getThings</font></b><font color="#990000">();</font>
+    <b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">SimThing</font> thing<font color="#990000">:</font> things<font color="#990000">)</font> <font color="#FF0000">{</font>
+      thing<font color="#990000">.</font><b><font color="#000000">paintThing</font></b><font color="#990000">(</font>g<font color="#990000">);</font>
+    <font color="#FF0000">}</font>
+  <font color="#FF0000">}</font>
+  
+<font color="#FF0000">}</font>
+</tt></pre>
