@@ -46,7 +46,7 @@ public class FoundPath {
 	 * @modified this
 	 */
 	public FoundPath() {
-		map = new CampusMap("src/hw8/data/campus_buildings.dat", "src/hw8/data/campus_paths.dat");
+		map = new CampusMap("../hw8/data/campus_buildings.dat", "../hw8/data/campus_paths.dat");
 		viewers = new ArrayList<PathView>();
 		path = null;
 		findTime = 0;

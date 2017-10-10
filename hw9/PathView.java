@@ -34,7 +34,7 @@ public class PathView extends JPanel{
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
 		Image img = Toolkit.getDefaultToolkit()
-					.getImage("../cse331/src/hw8/data/campus_map.jpg");
+					.getImage("../hw8/data/campus_map.jpg");
 		int panelHeight = getHeight();
 		int panelWidth = getWidth();
 		g2.drawImage(img, 0, 0, panelWidth, panelHeight, this);
