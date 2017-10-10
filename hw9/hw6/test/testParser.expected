@@ -1,6 +1,0 @@
-# Test the parser on a graph that contains several nodes
-# on a small Graph file *.tsv
-
-loaded graph heroes
-the children of Iron Man in heroes are: Black Widow(IM2) Captain America(A)
-the children of Batman in heroes are:

@@ -1,4 +1,0 @@
-# Test the parser on a graph that contains several nodes
-# on a small Graph file *.tsv
-
-LoadGraph heroes marvel.tsv

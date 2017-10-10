@@ -1,9 +1,0 @@
-# Load the test small graph and find the paths for:
-
-LoadGraph marvel marvel.tsv
-
-FindPath marvel IRON_MAN/TONY_STARK_ HAWK
-
-FindPath marvel IRON_MAN/TONY_STARK_ Batman
-
-FindPath marvel Superman Batman
